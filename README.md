@@ -229,8 +229,5 @@ For real production:
 * Delete the plaintext file after distribution
 * Force password reset at first login with:
 
-  ```bash
-  chage -d 0 username
-  ```
 
 
