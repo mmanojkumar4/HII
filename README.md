@@ -1,5 +1,5 @@
 
-# **User Management Automation Script **
+# User Management Automation Script 
 
 ---
 
