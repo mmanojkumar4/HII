@@ -2,7 +2,7 @@
 
 ---
 
-# **README – User Management Automation Script (`create_users.sh`)**
+# **User Management Automation Script **
 
 ## **1. Purpose and Design of the Script**
 
@@ -26,19 +26,22 @@ username;group1,group2,group3
 * Logs all successes, errors, and skipped entries to `/var/log/user_management.log` with **600 permissions**.
 * Displays clear messages through a custom logging function.
 
-The script ensures consistency, reduces human errors, and provides an audit trail through logs.
+The script ensures consistency, reduces human errors.
+It provides an audit trail through logs.
 
 ---
 
 ## **2. Step-by-Step Explanation**
 
-Below is a simple step-by-step breakdown of what the script does:
+step-by-step breakdown of what the script does:
 
 ### **Step 1: Read the input file**
 
 * Reads each line from the file you pass as an argument.
 * Example line:
   `manoj;dev,www-data`
+  `manojkumaroyals;devops,admin`
+  `tharun;devopler,engineer`
 
 ### **Step 2: Ignore unnecessary lines**
 
@@ -116,7 +119,7 @@ chmod +x create_users.sh
 ### **3. Run the script as root**
 
 ```bash
-sudo ./create_users.sh users.txt
+sudo ./create_users.sh employees.txt
 ```
 
 ### **4. Check logs**
