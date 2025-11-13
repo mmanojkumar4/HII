@@ -1,134 +1,183 @@
 
-
----
-
 # **User Management Automation Script **
 
-## **1. Purpose and Design of the Script**
+---
 
-The purpose of `create_users.sh` is to automate the creation and setup of user accounts for new employees in a Linux environment. Instead of manually creating each user, adding groups, setting passwords, and configuring home directories, this script automates the entire process using information from a simple text file.
+# **1. Introduction**
 
-Each line in the input file follows the format:
+This project automates the onboarding process for new developers or employees in a Linux environment.
+Instead of creating each user manually, assigning groups, generating passwords, and configuring home directories, this script performs all these tasks automatically based on a simple input file.
 
-```
-username;group1,group2,group3
-```
+The automation ensures:
 
-### **Design Highlights**
+* Faster user provisioning
+* Consistent configuration
+* Secure password handling
+* Complete logging for auditing
+* Reduced manual errors
 
-* Reads user information line-by-line and ignores empty lines or comments (lines starting with `#`).
-* Splits each line into a username and a list of additional groups.
-* Automatically creates missing groups.
-* Creates the user (or updates if already exists) and assigns the necessary groups.
-* Creates the home directory `/home/username` if it doesn’t exist, and applies correct permissions.
-* Generates a random 12-character password for each user.
-* Sets the user’s password and stores credentials securely in `/var/secure/user_passwords.txt` with **600 permissions**.
-* Logs all successes, errors, and skipped entries to `/var/log/user_management.log` with **600 permissions**.
-* Displays clear messages through a custom logging function.
 
-The script ensures consistency, reduces human errors.
-It provides an audit trail through logs.
 
 ---
 
-## **2. Step-by-Step Explanation**
+# **2. Purpose and Design of the Script**
 
-step-by-step breakdown of what the script does:
+The goal of `create_users.sh` is to read a list of usernames and their group memberships from a text file and automatically configure each user on the system.
 
-### **Step 1: Read the input file**
+### **Design Goals**
 
-* Reads each line from the file you pass as an argument.
-* Example line:
-  `manoj;dev,www-data`
-  `manojkumaroyals;devops,admin`
-  `tharun;devopler,engineer`
+* Read each line in the input file and extract `username;group1,group2`.
+* Skip blank or commented lines.
+* Automatically create missing Linux groups.
+* Create or update the user account.
+* Set up a home directory with correct permissions.
+* Generate a strong random password for each user.
+* Save credentials securely in `/var/secure/user_passwords.txt`.
+* Log every action to `/var/log/user_management.log`.
 
-### **Step 2: Ignore unnecessary lines**
 
-* Skips:
-
-  * Empty lines
-  * Lines starting with `#`
-
-### **Step 3: Clean and split each line**
-
-* Removes all whitespace.
-* Splits line into:
-
-  * **Username** (before `;`)
-  * **Groups** (after `;`)
-
-### **Step 4: Create supplementary groups**
-
-* Takes the comma-separated groups.
-* Checks if each group already exists.
-* Creates missing groups using `groupadd`.
-
-### **Step 5: Create or update the user**
-
-* If the user already exists:
-
-  * The script adds new groups using `usermod`.
-* If the user does NOT exist:
-
-  * Creates the user with a home directory and assigns groups.
-
-### **Step 6: Home directory setup**
-
-* Ensures `/home/username` exists.
-* Sets correct owner (`username:username`).
-* Sets permissions to `700` (private home directory).
-
-### **Step 7: Generate and apply password**
-
-* Generates a random 12-character password.
-* Sets password using `chpasswd`.
-* Stores `username:password` securely in `/var/secure/user_passwords.txt`.
-
-### **Step 8: Logging**
-
-* Every action is logged with a timestamp to:
-
-  * `/var/log/user_management.log`
-
-### **Step 9: Finalization**
-
-* After processing all users, the script applies correct permissions and logs completion.
 
 ---
 
-## **3. Example Usage**
+# **3. Project Structure**
 
-### **1. Create an input file**
-
-`users.txt`
+Your project folder should contain the following files:
 
 ```
-# New employees
+project-folder/
+│
+├── create_users.sh
+├── README.md
+├── employees.txt             # Your input file 
+│
+└── Output Files Created After Running Script:
+    ├── /var/secure/user_passwords.txt
+    └── /var/log/user_management.log
+```
+
+### **Explanation**
+
+* **create_users.sh** → Main automation script
+* **README.md** → Documentation
+* **users.txt** → Input file with usernames and groups
+* **user_passwords.txt** → Contains generated usernames & passwords (after execution)
+* **user_management.log** → Contains all logs (after execution)
+
+---
+
+# **4. Step-by-Step Explanation (How the Script Works)**
+
+The script performs the following steps:
+
+### **Step 1 – Validate Input**
+
+Confirms the script is run as `root` and the input file exists.
+
+### **Step 2 – Prepare Secure Directories**
+
+Creates:
+
+```
+/var/secure/user_passwords.txt
+/var/log/user_management.log
+```
+
+Permissions are set to `600`.
+
+### **Step 3 – Read Input File**
+
+Ignores:
+
+* Blank lines
+* Lines starting with `#`
+
+Cleans whitespace and splits into:
+
+* `username`
+* group list (comma-separated)
+
+### **Step 4 – Create Groups**
+
+For each group listed:
+
+* Check if group exists
+* If not, create it using `groupadd`
+
+### **Step 5 – Create or Update User**
+
+If user exists:
+
+* Add missing groups
+
+If new user:
+
+* Create with `/home/username`
+* Assign Bash shell
+* Assign all supplementary groups
+
+### **Step 6 – Home Directory Setup**
+
+Ensures:
+
+```
+/home/username
+```
+
+exists and has:
+
+* owner = username
+* permissions = 700
+
+### **Step 7 – Password Generation**
+
+* Creates a 12-character password using `/dev/urandom`
+* Applies it with `chpasswd`
+* Saves username:password to `/var/secure/user_passwords.txt`
+
+### **Step 8 – Logging**
+
+Every event is logged with a timestamp in:
+
+```
+/var/log/user_management.log
+```
+
+### **Step 9 – Completion**
+
+Re-checks permissions and prints a completion message.
+
+---
+
+# **5. Example Usage**
+
+### **Input File (`users.txt`)**
+
+```
+# New Employees
 light; sudo,dev,www-data
 siyoni; sudo
 manoj; dev,www-data
 ```
 
-### **2. Make the script executable**
+### **Make Script Executable**
 
 ```bash
 chmod +x create_users.sh
 ```
 
-### **3. Run the script as root**
+### **Run Script as Root**
 
 ```bash
-sudo ./create_users.sh employees.txt
+sudo ./create_users.sh users.txt
 ```
 
-### **4. Check logs**
+### **Check Log File**
 
 ```bash
 sudo cat /var/log/user_management.log
 ```
 
-### **5. Check generated passwords**
+### **Check Generated Passwords**
 
 ```bash
 sudo cat /var/secure/user_passwords.txt
@@ -136,55 +185,52 @@ sudo cat /var/secure/user_passwords.txt
 
 ---
 
-## **4. Security Considerations**
+# **6. Security Considerations**
 
-### **Sensitive Password File**
+###  Password File Security
 
-* Passwords are stored in **plaintext** in:
+The password file:
 
-  ```
-  /var/secure/user_passwords.txt
-  ```
-* This file has **600 permissions** so only `root` can read it.
-* In real environments, consider:
+```
+/var/secure/user_passwords.txt
+```
 
-  * Encrypting this file
-  * Using a secret manager (Vault, AWS Secrets Manager)
-  * Deleting the file after distribution
+contains plaintext passwords, so it is protected using:
 
-### **Least Privilege**
+```
+chmod 600
+```
 
-* Only `root` should run the script.
-* Log and password files are protected using:
+Only root can access it.
+
+###  Logging Privacy
+
+Log file also has:
+
+```
+chmod 600
+```
+
+to prevent unauthorized access to sensitive actions.
+
+###  Password Strength
+
+Passwords are:
+
+* 12 characters
+* Generated from `/dev/urandom`
+* Contain letters, numbers, and special characters
+
+###  Recommended Enhancements
+
+For real production:
+
+* Store passwords in an encrypted vault
+* Delete the plaintext file after distribution
+* Force password reset at first login with:
 
   ```bash
-  chmod 600
+  chage -d 0 username
   ```
-
-### **Password Strength**
-
-* Passwords are generated using `/dev/urandom`.
-* 12 characters including symbols provides good strength by default.
-
-### **Audit Logging**
-
-* All actions are logged to:
-
-  ```
-  /var/log/user_management.log
-  ```
-* This ensures traceability for compliance and auditing.
-
-### **Home Directory Permissions**
-
-* Home directories use:
-
-  ```
-  chmod 700
-  ```
-* This prevents other users from reading another user's files.
-
----
-
 
 
