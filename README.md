@@ -1,120 +1,119 @@
+Got you bro — I'll produce an **updated README.md** that includes **ALL required documentation** from your project checklist:
 
+✔ How to run the project
+✔ Example API calls
+✔ Security measures implemented
+✔ What you learned
+✔ UI details (HTML with textarea, button, output)
+✔ Testing instructions
+✔ Final deliverables section (Code + Documentation)
 
-This is the file everyone sees first.
-A great README makes your project look professional and interview-ready.
+This will make your project look **professional**, complete, and interview-ready.
 
+---
+
+# ✅ **UPDATED FULL README.md (Final Version — Complete Documentation)**
+
+You can copy–paste this entire section into your README.md.
+
+---
 
 ```markdown
-#  Safe Code Executor (Python + Flask + Docker Sandbox)
+# 🛡️ Safe Code Executor  
+A secure code execution sandbox built using **Flask + Docker**.  
+It allows running untrusted **Python** and **JavaScript** code safely inside isolated Docker containers with strict security measures.
 
-A secure web-based Python code execution sandbox built using **Flask** and **Docker**.
-
-User code runs *safely* inside a locked-down Docker container with:
-
-- CPU timeout  
-- Memory limits  
-- No internet  
-- Read-only filesystem  
-- Read-only mounted script  
-- Code size limit  
-- Clean JSON API  
-- Simple Web UI  
-
-This project demonstrates **how to execute untrusted code safely**, a skill used in online judges, cloud sandboxes, interview platforms, etc.
+This document explains how to run the project, how the API works, the security features implemented, test instructions, and what was learned during the project.
 
 ---
 
-#  Features
-
-###  Safe Docker Execution
-User code runs inside:
-
-```
-
-python:3.11-slim
-
-```
-
-with:
-
-- `--memory=128m`  
-- `--memory-swap=128m`
-- `--network none`  
-- `--read-only`  
-- read-only volume mount  
-- subprocess `timeout=10`  
-
-###  Security Protections
-
-| Protection | Status |
-|-----------|--------|
-| Infinite Loop Timeout | ✔ Blocks after 10s |
-| Memory Bomb Limit | ✔ Container killed |
-| Internet Disabled | ✔ DNS fails |
-| Filesystem Read-only | ✔ Write attempts fail |
-| Code Length Limit | ✔ max 5000 chars |
-| No Host Access | ✔ container isolated |
-
-###  Simple Web UI
-Runs code directly from browser  
-(`/ui` endpoint).
+# 🚀 Features (Easy-Level Complete)
+### ✔ Python code execution  
+### ✔ JavaScript (Node.js) execution  
+### ✔ Web UI (textarea + run button + output box)  
+### ✔ Code length validation (max 5000 chars)  
+### ✔ Resource limits: timeout + memory limit  
+### ✔ Network disabled  
+### ✔ Read-only filesystem  
+### ✔ Execution history (last 10 runs)
 
 ---
 
-#  Project Structure
-
+# 📦 Project Structure
 ```
 
-safe-code-executor/
+Safe_Code_Executor/
 │
 ├── app/
-│   ├── main.py              # Flask API routes
-│   ├── executor.py          # Docker execution sandbox
+│   ├── main.py              # Flask API + UI route + history
+│   ├── executor.py          # Secure Docker executor
+│   ├── history.json         # Last 10 executions
 │   └── templates/
 │       └── index.html       # Web UI
 │
 ├── docs/
-│   └── SECURITY_NOTES.md    # Security experiments & learnings
-│
-├── tests/                   # (manual tests)
+│   └── SECURITY_NOTES.md    # Notes from live experiments
 │
 ├── requirements.txt
-└── README.md
+└── README.md                # You're reading this
 
 ````
 
 ---
 
-#  Installation & Setup
+# 🧰 Requirements
 
-### 1. Clone the repository
+You need:
+
+- Python 3.8+
+- Docker Desktop installed & running
+- WSL2 recommended for Windows users
+- `pip` installed
+
+---
+
+# ▶️ How to Run the Project
+
+### 1️⃣ Clone the repo
 ```bash
 git clone <your_repo_url>
-cd safe-code-executor
+cd Safe_Code_Executor
 ````
 
-### 2. Create virtual environment
+### 2️⃣ Create a virtual environment
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate   # WSL / Linux
 ```
 
-### 3. Install dependencies
+### 3️⃣ Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Start Flask server
+### 4️⃣ Start Docker Desktop
+
+Make sure Docker is running:
+
+```bash
+docker run hello-world
+```
+
+### 5️⃣ Run the Flask server
 
 ```bash
 python3 app/main.py
 ```
 
-### 5. Open UI
+Your API will run at:
 
-Visit:
+```
+http://127.0.0.1:5000
+```
+
+UI available at:
 
 ```
 http://127.0.0.1:5000/ui
@@ -122,72 +121,268 @@ http://127.0.0.1:5000/ui
 
 ---
 
-#  API Usage
+# 🌐 Web UI
 
-### **POST** `/run`
+The project includes a clean, modern HTML interface with:
 
-**Request:**
+### ✔ Text area for code
 
-```json
-{
-  "code": "print(2 + 2)"
-}
+### ✔ Language dropdown
+
+### ✔ Run button
+
+### ✔ Clear button
+
+### ✔ Output display box
+
+Place your code in the textarea → click **Run** → output appears instantly.
+
+---
+
+# 📡 Example API Calls
+
+### ▶ Python Example
+
+```bash
+curl -X POST http://127.0.0.1:5000/run \
+  -H "Content-Type: application/json" \
+  -d '{"language":"python","code":"print(10+20)"}'
 ```
 
-**Response:**
+### ▶ JavaScript Example
 
-```json
-{
-  "output": "4\n"
-}
+```bash
+curl -X POST http://127.0.0.1:5000/run \
+  -H "Content-Type: application/json" \
+  -d '{"language":"javascript","code":"console.log(5*5);"}'
 ```
 
-Errors return:
+### ▶ View Execution History
 
-```json
-{
-  "error": "Execution timed out after 10 seconds.",
-  "exit_code": -2
-}
+```bash
+curl http://127.0.0.1:5000/history
 ```
 
 ---
 
-#  Security Learnings
+# 🛡️ Security Measures Implemented
 
-See full notes:
-`docs/SECURITY_NOTES.md`
+This project focuses on **safe execution of untrusted code**.
+The following protections are enforced:
 
-You will find results of:
+### ✔ **1. Timeout protection**
 
-* `/etc/passwd` test
-* Memory bomb test
-* Infinite loop
-* Write attack test
+Stops infinite loops:
+
+```
+--timeout 10 seconds
+```
+
+Example:
+
+```python
+while True: pass   → killed after 10s
+```
+
+---
+
+### ✔ **2. Memory limit**
+
+```
+--memory="128m" --memory-swap="128m"
+```
+
+Prevents RAM exhaustion:
+
+```python
+x = "a" * 1_000_000_000
+```
+
+Returns `exit_code 137` (killed by OOM).
+
+---
+
+### ✔ **3. Network blocked**
+
+```
+--network none
+```
+
+Any HTTP call fails:
+
+```python
+import requests
+requests.get("http://google.com")
+```
+
+---
+
+### ✔ **4. Read-only file system**
+
+```
+--read-only
+```
+
+Prevents file creation:
+
+```python
+open("/tmp/hack.txt", "w")
+```
+
+Error:
+
+```
+OSError: Read-only file system
+```
+
+---
+
+### ✔ **5. Code length limit**
+
+Rejects code > 5000 characters to avoid abuse.
+
+---
+
+### ✔ **6. Host isolation**
+
+Each run happens in a clean container:
+
+* No access to host files
+* No access to other users
+* No ability to modify the image
+
+---
+
+# 📘 What You Learned
+
+This project teaches core DevOps + security concepts:
+
+### 🐳 **How Docker isolates processes**
+
+* Separation of filesystem
+* Resource control (`memory`, `cpu`, `timeout`)
 * Network isolation
-* Docker filesystem isolation
+* Running commands safely within containers
 
-Great for interviews & resume.
+### 🔐 **Why untrusted code is dangerous**
+
+* Infinite loops can freeze systems
+* Memory bombs can crash servers
+* File writes can exploit host
+* Network requests might be malicious
+
+### 🧠 **How to design safe execution**
+
+* Use Docker instead of running code directly
+* Limit execution time
+* Limit memory usage
+* Disable network
+* Use read-only file systems
+
+### 🌐 **How to build a clean API**
+
+* `/run` endpoint for execution
+* `/history` endpoint for logs
+* Clean JSON responses
+
+### 🎨 **How to build a mini-IDE UI**
+
+* textarea editor
+* language selector
+* run/clear buttons
+* output box
 
 ---
 
-#  What I Learned
+# 🧪 Testing Instructions
 
-* How to run Python code inside Docker
-* How to isolate untrusted code using Docker flags
-* How to use timeouts, memory caps, and network isolation
-* Importance of read-only filesystems for security
-* How online judges (HackerRank, LeetCode) execute user code
-* How to expose a clean API + simple UI for code execution
+### ✔ Test normal code
 
----
+* print statements
+* loops
+* variables
+* JS console.log
 
+### ✔ Test infinite loops
 
-
-
-
-✅ Push to GitHub  
-✅ Write commit messages  
-✅ Add screenshots to README  
-Just say the word!
+```python
+while True: pass
 ```
+
+### ✔ Test memory bombs
+
+```python
+x = "a" * 1000000000
+```
+
+### ✔ Test network blocking
+
+```python
+import requests; requests.get("http://google.com")
+```
+
+### ✔ Test file write blocking
+
+```python
+open("/tmp/hack.txt","w")
+```
+
+### ✔ Test long code (>5000 chars)
+
+### ✔ Test history
+
+```
+curl http://127.0.0.1:5000/history
+```
+
+### ✔ Test UI buttons and output formatting
+
+---
+
+# 🧾 Final Deliverables
+
+## ✅ **Code**
+
+* Working Flask API
+* Docker integration
+* Secure executor
+* Clean and documented source
+
+## ✅ **Documentation**
+
+* README with setup + API usage
+* Security notes
+* Explanation of sandbox design
+* What was learned
+
+## ✅ **UI**
+
+* Textarea editor
+* Submit (Run) button
+* Output display
+
+## ✅ **Git Repository**
+
+* Clear commit history
+* Organized folder structure
+
+---
+
+# 🎉 Conclusion
+
+You now have a **fully functional secure code execution engine**, similar to what platforms like Replit, HackerRank, and LeetCode use behind the scenes.
+
+This project proves knowledge in:
+
+✔ Web development
+✔ Docker security
+✔ DevOps fundamentals
+✔ Python backend
+✔ JavaScript execution
+✔ Sandbox design
+✔ Secure system thinking
+
+
+
+---
+
