@@ -1,6 +1,4 @@
 
-
-
 # Safe Code Executor
 
 A secure Flask + Docker–based sandbox that runs **Python** and **JavaScript** code safely in isolated containers.
@@ -47,14 +45,14 @@ Safe_Code_Executor/
 
 ##  System Architecture (5 Layers)
 
-### **1️ UI (User Interface)**
+### **1️.UI (User Interface)**
 
 * HTML textarea for writing code
 * Language selector
 * Sends `{ language, code }` to backend
 * Displays output / errors
 
-### **2️ Flask API**
+### **2️.Flask API**
 
 * Validates:
 
@@ -63,7 +61,7 @@ Safe_Code_Executor/
 * Saves execution history
 * Sends code to Docker executor
 
-### **3️ Secure Docker Sandbox**
+### **3️.Secure Docker Sandbox**
 
 * Executes untrusted code with:
 
@@ -76,13 +74,13 @@ Safe_Code_Executor/
   * Python → `python:3.11-slim`
   * JavaScript → `node:18-slim`
 
-### **4️ Executor Module**
+### **4️.Executor Module**
 
 * Writes code to temporary file
 * Mounts as read-only inside container
 * Captures stdout, stderr, exit code
 
-### **5️ History System**
+### **5️.History System**
 
 * Stores last 10 runs in `history.json`
 * Accessible via `/history`
