@@ -16,17 +16,18 @@ This guide shows **exactly how to run the project**, with **step-by-step instruc
 Safe_Code_Executor/
 │
 ├── app/
-│   ├── main.py
-│   ├── executor.py
-│   ├── history.json
+│   ├── main.py              # Flask server (routes, validation, UI)
+│   ├── executor.py          # Docker sandbox executor
+│   ├── history.json         # Stores last 10 executions
 │   └── templates/
-│       └── index.html
+│       └── index.html       # Web UI
 │
 ├── docs/
-│   └── SECURITY_NOTES.md
+│   └── SECURITY_NOTES.md    # Notes from Docker security experiments
 │
-├── requirements.txt
-└── README.md
+├── requirements.txt         # Python dependencies
+└── README.md                # Documentation
+
 
 
 ###  What each component does
