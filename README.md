@@ -1,12 +1,6 @@
-Perfect bro — here is a **clean, stylish, professional README.md** using your **step-by-step action → command → output** requirement.
 
-This is **portfolio-ready**, formatted beautifully, and easy for reviewers to follow.
 
-👇 **Copy–paste the full file into README.md**.
-
----
-
-# 🛡️ Safe Code Executor
+#  Safe Code Executor
 
 A secure Flask + Docker–based sandbox that runs **Python** and **JavaScript** code safely in isolated containers.
 
@@ -14,7 +8,7 @@ This guide shows **exactly how to run the project**, with **step-by-step instruc
 
 ---
 
-# 🔧 Prerequisites
+#  Prerequisites
 
 * Python 3.8+
 * Docker Desktop running
@@ -23,12 +17,9 @@ This guide shows **exactly how to run the project**, with **step-by-step instruc
 
 ---
 
-# 🚀 Getting Started (Step-by-Step)
+#  Getting Started (Step-by-Step)
 
-Each step includes:
-👉 **What we're doing**
-👉 **The exact command**
-👉 **Expected output**
+
 
 ---
 
@@ -114,7 +105,7 @@ Running on http://0.0.0.0:5000
 
 ---
 
-# 🧪 API Testing (Step-by-Step)
+#  API Testing (Step-by-Step)
 
 ---
 
@@ -164,7 +155,7 @@ curl -X POST http://127.0.0.1:5000/run \
 
 ---
 
-# ⚠️ Security Test Cases (with Expected Results)
+#  Security Test Cases (with Expected Results)
 
 These demonstrate the sandbox protection.
 
@@ -254,7 +245,7 @@ curl -X POST http://127.0.0.1:5000/run \
 
 ---
 
-# 🖥️ Web UI
+#  Web UI
 
 Open the UI in browser:
 
@@ -272,7 +263,7 @@ http://127.0.0.1:5000/ui
 
 ---
 
-# 📜 Execution History
+#  Execution History
 
 Check last 10 runs:
 
@@ -297,7 +288,7 @@ curl http://127.0.0.1:5000/history
 
 ---
 
-# 🔐 Security Features Implemented
+#  Security Features Implemented
 
 * **Isolated Docker container** per execution
 * **Timeout** (10 seconds)
@@ -310,64 +301,35 @@ curl http://127.0.0.1:5000/history
 
 ---
 
-# 📘 What I Learned
+#  What I Learned
 
 From this project:
 
-### 🐳 Docker Security
+###  Docker Security
 
 * How to run untrusted code safely
 * Memory limits, network blocking, read-only root FS
 * How containers isolate file systems
 
-### 🧠 Safe Code Execution Principles
+###  Safe Code Execution Principles
 
 * Why sandboxing is mandatory
 * How infinite loops, memory bombs, file writes, and network calls can be dangerous
 * How to restrict and monitor executions
 
-### ⚙️ Backend API Skills
+###  Backend API Skills
 
 * Building `/run` and `/history` endpoints
 * Handling errors safely
 * Returning proper JSON responses
 
-### 🎨 Frontend Integration
+###  Frontend Integration
 
 * Simple UI with textarea + output console
 * Making a user-friendly testing interface
 
 ---
 
-# 📦 Final Deliverables Checklist
-
-### ✔ Working API
-
-* Docker-based execution
-* Python + JavaScript support
-* Secure by design
-
-### ✔ Clean, Commented Code
-
-* `main.py`
-* `executor.py`
-* `index.html`
-
-### ✔ Documentation
-
-* Simple step-by-step README (this file)
-* Security notes
-* How to run + examples
-
-### ✔ Web UI
-
-* Code input
-* Language selection
-* Output display
-
-Your project is **complete, functional, secure, and portfolio-ready** 🎉🔥
-
----
 
 If you want:
 
