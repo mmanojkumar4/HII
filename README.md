@@ -4,9 +4,124 @@
 
 A secure Flask + Docker–based sandbox that runs **Python** and **JavaScript** code safely in isolated containers.
 
+Safe Code Executor is a secure sandbox system that runs untrusted Python and JavaScript code inside isolated Docker containers. 
+It enforces strict security controls—timeout, memory limits, no network, and read-only filesystem—to ensure safe execution. Includes a simple web UI and execution history.
+
 This guide shows **exactly how to run the project**, with **step-by-step instructions**, **command examples**, and **expected output** for every step.
 
 ---
+
+##  Project Structure
+
+Safe_Code_Executor/
+│
+├── app/
+│   ├── main.py              # Flask server (routes, validation, UI)
+│   ├── executor.py          # Docker sandbox executor
+│   ├── history.json         # Stores last 10 executions
+│   └── templates/
+│       └── index.html       # Web UI
+│
+├── docs/
+│   └── SECURITY_NOTES.md    # Notes from Docker security tests
+│
+├── requirements.txt         # Python dependencies
+└── README.md                # Documentation
+
+
+###  What each component does
+
+| Component          | Description |
+|-------------------|-------------|
+| **main.py**       | API `/run`, `/history`, `/ui`, validates input, saves history |
+| **executor.py**   | Runs code safely inside Docker with limits (timeout, RAM, no network, read-only) |
+| **index.html**    | UI (textarea + language selector + output box) |
+| **history.json**  | Last 10 executions saved with timestamp |
+| **SECURITY_NOTES.md** | Results of your safety experiments |
+
+
+---
+
+##  System Architecture
+
+The system contains 5 layers that work together to securely run untrusted code:
+
+### 1️ User Interface (UI)
+- HTML page where the user writes code.
+- Send `{ language, code }` to the backend.
+- Displays the output or error.
+
+### 2️ Flask API (Backend)
+- Receives code from UI.
+- Validates:
+  - Supported language (`python` or `javascript`)
+  - Code length ≤ **5000 characters**
+- Saves the request to history.
+- Calls the Docker executor.
+
+### 3️ Secure Docker Sandbox
+Runs the user’s code inside an isolated container with:
+- `--network none` → no internet  
+- `--read-only` → cannot write any files  
+- `--memory=128m --memory-swap=128m` → memory limit  
+- Timeout: **10 seconds**  
+- Python container: **python:3.11-slim**  
+- JS container: **node:18-slim**
+
+### 4️ Executor Module
+- Writes code to temporary file.
+- Mounts file into container (`script.py:ro`).
+- Executes code with Docker.
+- Captures:
+  - `stdout`  
+  - `stderr`  
+  - `exit_code`
+
+### 5️ History System
+- Stores latest 10 executions in `history.json`.
+- Accessible via `/history` endpoint.
+
+
+---
+
+##  Architecture Diagram
+
+Flow:
+User → UI → Flask API → Docker Executor → Container → Output → History → UI
+
+### Architecture Diagram  
+
+
+
+
+
+
+
+
+
+
+##  Execution Flow (Step-by-Step)
+
+1. User writes code in the UI.
+2. Browser sends POST request to `/run`.
+3. Flask validates code length + language.
+4. Code written to temporary file.
+5. Executor chooses correct Docker image (Python / Node.js).
+6. Docker container runs with:
+   - timeout
+   - memory limit
+   - no network
+   - read-only filesystem
+7. Container outputs stdout / stderr.
+8. Flask formats response → returns to UI.
+9. Execution stored in `history.json`.
+10. User can view history via `/history`.
+
+
+
+
+
+
 
 #  Prerequisites
 
@@ -331,9 +446,3 @@ From this project:
 ---
 
 
-If you want:
-
-* A **GIF demo** section
-* A **project banner**
-* A nicer **architecture diagram**
-  just tell me — I’ll add it.
