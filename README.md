@@ -1,10 +1,11 @@
 
 
-#  Safe Code Executor
+
+# Safe Code Executor
 
 A secure Flask + Docker–based sandbox that runs **Python** and **JavaScript** code safely in isolated containers.
 
-Safe Code Executor is a secure sandbox system that runs untrusted Python and JavaScript code inside isolated Docker containers. 
+Safe Code Executor is a secure sandbox system that runs untrusted Python and JavaScript code inside isolated Docker containers.
 It enforces strict security controls—timeout, memory limits, no network, and read-only filesystem—to ensure safe execution. Includes a simple web UI and execution history.
 
 This guide shows **exactly how to run the project**, with **step-by-step instructions**, **command examples**, and **expected output** for every step.
@@ -13,7 +14,7 @@ This guide shows **exactly how to run the project**, with **step-by-step instruc
 
 ##  Project Structure
 
-
+```text
 Safe_Code_Executor/
 │
 ├── app/
@@ -28,129 +29,101 @@ Safe_Code_Executor/
 │
 ├── requirements.txt         # Python dependencies
 └── README.md                # Documentation
-
-
-
-###  What each component does
-
-| Component          | Description |
-|-------------------|-------------|
-| **main.py**       | API `/run`, `/history`, `/ui`, validates input, saves history |
-| **executor.py**   | Runs code safely inside Docker with limits (timeout, RAM, no network, read-only) |
-| **index.html**    | UI (textarea + language selector + output box) |
-| **history.json**  | Last 10 executions saved with timestamp |
-| **SECURITY_NOTES.md** | Results of your safety experiments |
-
+```
 
 ---
 
-##  System Architecture
+##  What Each Component Does
 
-The system contains 5 layers that work together to securely run untrusted code:
-
-### 1️ User Interface (UI)
-- HTML page where the user writes code.
-- Send `{ language, code }` to the backend.
-- Displays the output or error.
-
-### 2️ Flask API (Backend)
-- Receives code from UI.
-- Validates:
-  - Supported language (`python` or `javascript`)
-  - Code length ≤ **5000 characters**
-- Saves the request to history.
-- Calls the Docker executor.
-
-### 3️ Secure Docker Sandbox
-Runs the user’s code inside an isolated container with:
-- `--network none` → no internet  
-- `--read-only` → cannot write any files  
-- `--memory=128m --memory-swap=128m` → memory limit  
-- Timeout: **10 seconds**  
-- Python container: **python:3.11-slim**  
-- JS container: **node:18-slim**
-
-### 4️ Executor Module
-- Writes code to temporary file.
-- Mounts file into container (`script.py:ro`).
-- Executes code with Docker.
-- Captures:
-  - `stdout`  
-  - `stderr`  
-  - `exit_code`
-
-### 5️ History System
-- Stores latest 10 executions in `history.json`.
-- Accessible via `/history` endpoint.
-
+| Component             | Description                                                                      |
+| --------------------- | -------------------------------------------------------------------------------- |
+| **main.py**           | API `/run`, `/history`, `/ui`, validates input, saves history                    |
+| **executor.py**       | Runs code safely inside Docker with limits (timeout, RAM, no network, read-only) |
+| **index.html**        | UI (textarea + language selector + run button + output)                          |
+| **history.json**      | Stores last 10 executions with timestamp                                         |
+| **SECURITY_NOTES.md** | Results of sandbox experiments                                                   |
 
 ---
 
-##  Architecture Diagram
+##  System Architecture (5 Layers)
 
-Flow:
-User → UI → Flask API → Docker Executor → Container → Output → History → UI
+### **1️ UI (User Interface)**
 
-### Architecture Diagram  
+* HTML textarea for writing code
+* Language selector
+* Sends `{ language, code }` to backend
+* Displays output / errors
 
+### **2️ Flask API**
 
+* Validates:
 
+  * Supported languages (`python`, `javascript`)
+  * Code length ≤ **5000 chars**
+* Saves execution history
+* Sends code to Docker executor
 
+### **3️ Secure Docker Sandbox**
 
+* Executes untrusted code with:
 
+  * `--network none` → No internet
+  * `--read-only` → No file writes
+  * `--memory=128m` → RAM limit
+  * Timeout 10 sec
+* Images:
 
+  * Python → `python:3.11-slim`
+  * JavaScript → `node:18-slim`
 
+### **4️ Executor Module**
 
+* Writes code to temporary file
+* Mounts as read-only inside container
+* Captures stdout, stderr, exit code
 
-##  Execution Flow (Step-by-Step)
+### **5️ History System**
 
-1. User writes code in the UI.
-2. Browser sends POST request to `/run`.
-3. Flask validates code length + language.
-4. Code written to temporary file.
-5. Executor chooses correct Docker image (Python / Node.js).
-6. Docker container runs with:
-   - timeout
-   - memory limit
-   - no network
-   - read-only filesystem
-7. Container outputs stdout / stderr.
-8. Flask formats response → returns to UI.
-9. Execution stored in `history.json`.
-10. User can view history via `/history`.
+* Stores last 10 runs in `history.json`
+* Accessible via `/history`
 
+---
 
+##  Execution Flow
 
+1. User writes code in UI
+2. Browser sends POST → `/run`
+3. Flask validates code
+4. Code is written to temp file
+5. Executor selects container (Python/JS)
+6. Docker runs with security restrictions
+7. Output/error returned to Flask
+8. Added to history
+9. Shown in UI
 
-
-
+---
 
 #  Prerequisites
 
 * Python 3.8+
-* Docker Desktop running
-* WSL2 (recommended for Windows users)
+* Docker Desktop
+* WSL2 recommended
 * Git
 
 ---
 
 #  Getting Started (Step-by-Step)
 
-
-
 ---
 
-## 1️⃣ Clone the Project
-
-**What we do:** Get the project on your machine.
-**Command:**
+## **1️ Clone the Project**
 
 ```bash
 git clone <your_repo_url>
 cd Safe_Code_Executor
 ```
 
-**Expected Output:**
+**Expected Output**
 
 ```
 Cloning into 'Safe_Code_Executor'...
@@ -158,16 +131,14 @@ Cloning into 'Safe_Code_Executor'...
 
 ---
 
-## 2️⃣ Create & Activate Virtual Environment
-
-**Command (WSL/Linux):**
+## **2️ Create & Activate Virtual Environment**
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-**Expected:** Shell changes to:
+**Expected**
 
 ```
 (venv)
@@ -175,13 +146,13 @@ source venv/bin/activate
 
 ---
 
-## 3️⃣ Install Dependencies
+## **3️ Install Dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-**Expected Output:**
+**Expected**
 
 ```
 Successfully installed flask ...
@@ -189,35 +160,22 @@ Successfully installed flask ...
 
 ---
 
-## 4️⃣ Start Docker Daemon
+## **4️ Start Docker Daemon**
 
-**Action:** Open Docker Desktop → wait for **Docker is running**.
+Open **Docker Desktop** → Wait for "Docker is running".
 
-**Optional verification:**
+Optional test:
 
 ```bash
 docker run hello-world
 ```
 
-**Expected:**
-
-```
-Hello from Docker!
-```
-
 ---
 
-## 5️⃣ Start the Flask Server
+## **5️ Run the Flask Server**
 
 ```bash
 python3 app/main.py
-```
-
-**Expected Output:**
-
-```
-Using history file at: /.../app/history.json
-Running on http://0.0.0.0:5000
 ```
 
 ---
@@ -226,13 +184,13 @@ Running on http://0.0.0.0:5000
 
 ---
 
-## 6️⃣ Health Check
+## **6️ Health Check**
 
 ```bash
 curl http://127.0.0.1:5000/
 ```
 
-**Expected Output:**
+Expected:
 
 ```
 Safe Code Executor API is running!
@@ -240,7 +198,7 @@ Safe Code Executor API is running!
 
 ---
 
-## 7️⃣ Run Python Code
+## **7️ Run Python Code**
 
 ```bash
 curl -X POST http://127.0.0.1:5000/run \
@@ -248,7 +206,7 @@ curl -X POST http://127.0.0.1:5000/run \
  -d '{"language":"python","code":"print(2+2)"}'
 ```
 
-**Expected:**
+Expected:
 
 ```json
 {"output":"4\n"}
@@ -256,7 +214,7 @@ curl -X POST http://127.0.0.1:5000/run \
 
 ---
 
-## 8️⃣ Run JavaScript Code
+## **8️ Run JavaScript Code**
 
 ```bash
 curl -X POST http://127.0.0.1:5000/run \
@@ -264,7 +222,7 @@ curl -X POST http://127.0.0.1:5000/run \
  -d '{"language":"javascript","code":"console.log(2+2)"}'
 ```
 
-**Expected:**
+Expected:
 
 ```json
 {"output":"4\n"}
@@ -272,21 +230,19 @@ curl -X POST http://127.0.0.1:5000/run \
 
 ---
 
-#  Security Test Cases (with Expected Results)
-
-These demonstrate the sandbox protection.
+#  Security Tests (With Expected Outputs)
 
 ---
 
-## 9️⃣ Infinite Loop Prevention (Timeout)
+## **9️ Infinite Loop (Timeout)**
 
 ```bash
 curl -X POST http://127.0.0.1:5000/run \
- -H "Content-Type: application/json" \
- -d '{"language":"python","code":"while True: pass"}'
+  -H "Content-Type: application/json" \
+  -d '{"language":"python","code":"while True: pass"}'
 ```
 
-**Expected:**
+Expected:
 
 ```json
 {"error":"Execution timed out after 10 seconds.","exit_code":-2}
@@ -294,15 +250,15 @@ curl -X POST http://127.0.0.1:5000/run \
 
 ---
 
-## 🔟 Memory Limit (OOM Kill)
+## **10 Memory Limit Test**
 
 ```bash
 curl -X POST http://127.0.0.1:5000/run \
- -H "Content-Type: application/json" \
- -d '{"language":"python","code":"x = \"a\" * 1000000000"}'
+  -H "Content-Type: application/json" \
+  -d '{"language":"python","code":"x = \"a\" * 1000000000"}'
 ```
 
-**Expected:**
+Expected:
 
 ```json
 {"error":"","exit_code":137}
@@ -310,20 +266,19 @@ curl -X POST http://127.0.0.1:5000/run \
 
 ---
 
-## 1️⃣1️⃣ Network Block
+## **1️1️ Network Block**
 
 ```bash
 curl -X POST http://127.0.0.1:5000/run \
- -H "Content-Type: application/json" \
- -d '{"language":"python","code":"import urllib.request; urllib.request.urlopen(\"https://google.com\")"}'
+  -H "Content-Type: application/json" \
+  -d '{"language":"python","code":"import urllib.request; urllib.request.urlopen(\"https://google.com\")"}'
 ```
 
-**Expected:**
-DNS/connection error in stderr (container has no network).
+Expected: DNS/network failure (no internet inside container).
 
 ---
 
-## 1️⃣2️⃣ File System Protection (Read-Only)
+## **1️2️ Read-Only Filesystem**
 
 ```bash
 curl -X POST http://127.0.0.1:5000/run \
@@ -331,7 +286,7 @@ curl -X POST http://127.0.0.1:5000/run \
  -d '{"language":"python","code":"open(\"/tmp/hack.txt\",\"w\").write(\"hello\")"}'
 ```
 
-**Expected:**
+Expected:
 
 ```
 OSError: [Errno 30] Read-only file system
@@ -339,22 +294,11 @@ OSError: [Errno 30] Read-only file system
 
 ---
 
-## 1️⃣3️⃣ Reading Container Files (Allowed)
+## **1️3️ Code Length Limit**
 
-```bash
-curl -X POST http://127.0.0.1:5000/run \
- -H "Content-Type: application/json" \
- -d '{"language":"python","code":"print(open(\"/etc/passwd\").read())"}'
-```
+Send >5000 characters.
 
-**Expected:** Contents of container’s `/etc/passwd`.
-
----
-
-## 1️⃣4️⃣ Code Length Limit (5000 chars)
-
-**What we do:** Submit a very long code string.
-**Expected:**
+Expected:
 
 ```json
 {"error":"Code too long. Maximum allowed length is 5000 characters."}
@@ -364,15 +308,14 @@ curl -X POST http://127.0.0.1:5000/run \
 
 #  Web UI
 
-Open the UI in browser:
+Open in browser:
 
 ```
 http://127.0.0.1:5000/ui
 ```
 
-### Features:
-
-✔ Text area for code
+Features:
+✔ Textarea for code
 ✔ Language dropdown
 ✔ Run button
 ✔ Clear button
@@ -382,69 +325,52 @@ http://127.0.0.1:5000/ui
 
 #  Execution History
 
-Check last 10 runs:
+Get last 10 executions:
 
 ```bash
 curl http://127.0.0.1:5000/history
-```
-
-**Expected:**
-
-```json
-[
-  {
-    "language": "python",
-    "code": "print(2+2)",
-    "output": "4\n",
-    "error": "",
-    "exit_code": 0,
-    "time": "2025-02-12 21:00:00"
-  }
-]
 ```
 
 ---
 
 #  Security Features Implemented
 
-* **Isolated Docker container** per execution
-* **Timeout** (10 seconds)
-* **Memory limit** (128 MB)
-* **Network disabled** (`--network none`)
-* **Read-only filesystem** (`--read-only`)
-* **Mounted file read-only** (`script.py:ro`)
-* **Code length restricted** to 5000 characters
-* **History log** (last 10 executions)
+* Timeout (10 seconds)
+* Memory limit (128MB)
+* Network disabled (`--network none`)
+* Read-only filesystem
+* Mounted file read-only
+* Code length limit (5000 chars)
+* Isolated Docker container per run
 
 ---
 
 #  What I Learned
 
-From this project:
+### **Docker Security**
 
-###  Docker Security
+* Container isolation
+* Memory/CPU limits
+* No-network execution
+* Read-only root filesystems
 
-* How to run untrusted code safely
-* Memory limits, network blocking, read-only root FS
-* How containers isolate file systems
+### **Safe Code Execution Design**
 
-###  Safe Code Execution Principles
+* Prevent infinite loops
+* Prevent memory abuse
+* Prevent file writes
+* Prevent network misuse
 
-* Why sandboxing is mandatory
-* How infinite loops, memory bombs, file writes, and network calls can be dangerous
-* How to restrict and monitor executions
+### **Backend Development**
 
-###  Backend API Skills
+* REST API design (`/run`, `/history`, `/ui`)
+* JSON-based responses
+* Error handling
 
-* Building `/run` and `/history` endpoints
-* Handling errors safely
-* Returning proper JSON responses
+### **Frontend Integration**
 
-###  Frontend Integration
-
-* Simple UI with textarea + output console
-* Making a user-friendly testing interface
+* HTML UI with textarea & live output
+* Simple, practical developer tool
 
 ---
-
 
