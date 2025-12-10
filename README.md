@@ -313,12 +313,13 @@ http://127.0.0.1:5000/ui
 ```
 
 Features:
-✔ Textarea for code
-✔ Language dropdown
-✔ Run button
-✔ Clear button
-✔ Output console
-
+ ```
+ Textarea for code
+ Language dropdown
+ Run button
+ Clear button
+ Output console
+```
 ---
 
 #  Execution History
